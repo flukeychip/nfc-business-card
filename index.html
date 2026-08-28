@@ -33,14 +33,14 @@
       font-family: var(--font);
       background-color: var(--bg-color);
       color: var(--text-main);
-      line-height: 1.7;
+      line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1.25rem;
+      padding: 1rem 1.25rem;
     }
 
     @supports (min-height: 100dvh) {
@@ -52,7 +52,7 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
-      padding: 2.25rem 1.75rem;
+      padding: 1.85rem 1.5rem;
       max-width: 560px;
       width: 100%;
     }
@@ -91,7 +91,7 @@
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.35rem;
       font-weight: 800;
       line-height: 1.3;
       letter-spacing: -0.4px;
@@ -116,7 +116,7 @@
     .divider {
       height: 1px;
       background: var(--border);
-      margin: 1.75rem 0;
+      margin: 1.35rem 0;
       border: 0;
     }
 
@@ -159,7 +159,7 @@
     .btn svg { flex-shrink: 0; }
 
     footer {
-      margin-top: 1.75rem;
+      margin-top: 1rem;
       text-align: center;
       font-family: var(--font-mono);
       font-size: 0.7rem;
@@ -171,6 +171,19 @@
       color: var(--text-muted);
       text-decoration: none;
       border-bottom: 1px solid var(--border);
+    }
+
+    /* Short screens (older/smaller Androids, and any phone in landscape): claw back
+       vertical space so the two buttons stay reachable without much scrolling. */
+    @media (max-height: 720px) {
+      .card { padding: 1.4rem 1.4rem; }
+      .eyebrow { margin-bottom: 0.85rem; }
+      h1 { font-size: 1.2rem; margin-bottom: 0.85rem; }
+      p { font-size: 0.92rem; margin-bottom: 0.7rem; }
+      .divider { margin: 1rem 0; }
+      .btn { min-height: 48px; padding: 0.7rem 1.25rem; }
+      .buttons { gap: 0.6rem; }
+      footer { margin-top: 0.8rem; }
     }
 
     @media (min-width: 600px) {
@@ -192,21 +205,15 @@
     </h1>
 
     <p>
-      That card is a <strong>PCB I designed and built myself</strong>: a custom-routed
-      NFC antenna and transponder, no battery anywhere on it. It borrows power from
-      your phone's radio field to serve you this page.
+      That card is a <strong>PCB I designed and built myself</strong> &mdash; custom-routed
+      NFC antenna and transponder, no battery. It borrows power from your phone's radio
+      field to serve you this page.
     </p>
 
     <p>
       I'm <strong>Alexander Arens</strong>, a junior at Purdue studying electrical
-      engineering. I build hardware &mdash; robotics, embedded systems, power
-      electronics, and computer vision. Recently that's meant a six-axis robot arm
-      running on cycloidal drives I designed, an AR physics simulation projected onto
-      my wall, and a handful of buck converters along the way.
-    </p>
-
-    <p>
-      If any of that is the kind of thing your team does, I'd genuinely like to talk.
+      engineering. I build hardware: robotics, embedded systems, power electronics, and
+      computer vision. If that's the kind of thing your team does, I'd like to talk.
     </p>
 
     <hr class="divider" />
