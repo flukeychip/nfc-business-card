@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alexander Arens — NFC Business Card</title>
   <meta name="description" content="Alexander Arens — electrical engineering student at Purdue. You tapped my PCB business card. Here's my LinkedIn and project portfolio." />
-  <meta name="theme-color" content="#0F4C81" />
+  <meta name="theme-color" content="#232D3A" />
 
   <!-- Recruiters land here from a phone tap, often on bad career-fair cell service.
        Everything is inlined so this page is a single request. -->
@@ -17,7 +17,10 @@
 
   <style>
     :root {
-      --bg-color: #FAFAFC;
+      /* The exact canvas colour of the board artwork (sampled from board.png), so
+         the sliced border band blends into the page and only the traces read. */
+      --bg-color: #232D3A;
+      --page-muted: rgba(255, 255, 255, 0.55);   /* text outside the white card */
       --text-main: #111111;
       --text-muted: #666666;
       --accent: #0F4C81;
@@ -75,7 +78,7 @@
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
       padding: 1.85rem 1.5rem;
       max-width: 560px;
       width: 100%;
@@ -190,13 +193,13 @@
       font-family: var(--font-mono);
       font-size: 0.7rem;
       letter-spacing: 0.5px;
-      color: var(--text-muted);
+      color: var(--page-muted);
     }
 
     footer a {
-      color: var(--text-muted);
+      color: var(--page-muted);
       text-decoration: none;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     /* Narrow screens: a 34px band eats 68px of a 375px-wide phone, squeezing the
