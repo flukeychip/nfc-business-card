@@ -17,42 +17,36 @@
 
   <style>
     :root {
-      /* The exact canvas colour of the board artwork (sampled from board.png), so
-         the sliced border band blends into the page and only the traces read. */
+      /* Board canvas colour (sampled from board.png) — sits behind the artwork as
+         a fallback and fills any area the image doesn't cover. */
       --bg-color: #232D3A;
-      --page-muted: rgba(255, 255, 255, 0.55);   /* text outside the white card */
-      --text-main: #111111;
-      --text-muted: #666666;
-      --accent: #0F4C81;
-      --card-bg: #FFFFFF;
-      --border: #EAEAEA;
+      --page-muted: rgba(255, 255, 255, 0.55);   /* text outside the card */
+      /* The card is now glass over the board, so its text is light, not dark. */
+      --text-main: #FFFFFF;
+      --text-muted: rgba(255, 255, 255, 0.74);
+      --accent: #0F4C81;                 /* button fills — white text on this is 8.9:1 */
+      --accent-light: #6BB2F5;           /* accent TEXT on the dark card */
+      --card-bg: rgba(16, 22, 31, 0.80);
+      --border: rgba(255, 255, 255, 0.16);
       --font: 'Inter', Helvetica, Arial, sans-serif;
       --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ===== NFC ANTENNA FRAME =====
-       The board artwork itself, used as a CSS border-image. The outer strip of
-       the screenshot (the three coil turns) is sliced off and stretched around
-       the viewport; the middle of the image is dropped, so the page background
-       shows through and the light theme is kept.
-
-       Slices measured off the source (528x840 px): the coil ends 46px from the
-       top, 48px from the right, 46px from the bottom, and 60px from the left --
-       the left edge carries the extra feed trace running off-board. */
-    :root {
-      --frame-w: 40px;                        /* on-screen thickness of the coil band */
-      --t-pad: calc(var(--frame-w) + 12px);   /* clearance so content clears the coil */
-    }
-
+    /* ===== THE BOARD =====
+       The full artwork, not just its edge: the whole PCB fills the viewport so the
+       coil, the components and the silkscreen are all visible behind the content.
+       Vector, traced from the KiCad PDF plot (415 paths, every layer), so it stays
+       sharp at any density instead of softening like the screenshot did. The plot is
+       landscape, so the SVG is rotated 90 CW internally to frame a portrait screen.
+       Stretched rather than cropped so the coil reaches all four screen edges. */
     .pcb-frame {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 0;
-      border: var(--frame-w) solid transparent;
-      border-image: url('img/board.png') 46 48 46 60 / var(--frame-w) stretch;
+      background: url('img/board.svg') center / 100% 100% no-repeat;
     }
 
     body {
@@ -75,10 +69,14 @@
     }
 
     .card {
+      /* Translucent so the board reads through it, blurred so the traces behind
+         never fight the text. */
       background: var(--card-bg);
+      -webkit-backdrop-filter: blur(14px) saturate(120%);
+      backdrop-filter: blur(14px) saturate(120%);
       border: 1px solid var(--border);
       border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
       padding: 1.85rem 1.5rem;
       max-width: 560px;
       width: 100%;
@@ -91,7 +89,7 @@
       font-size: 0.7rem;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--accent-light);
       font-weight: 500;
       display: flex;
       align-items: center;
@@ -105,7 +103,7 @@
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--accent);
+      background: var(--accent-light);
       flex-shrink: 0;
       animation: pulse 2s ease-in-out infinite;
     }
@@ -128,7 +126,7 @@
     }
 
     h1 .worked {
-      color: var(--accent);
+      color: var(--accent-light);
     }
 
     p {
@@ -144,7 +142,7 @@
 
     .divider {
       height: 1px;
-      background: var(--border);
+      background: rgba(255, 255, 255, 0.16);
       margin: 1.35rem 0;
       border: 0;
     }
@@ -180,9 +178,9 @@
     }
 
     .btn-outline {
-      background-color: transparent;
+      background-color: rgba(255, 255, 255, 0.06);
       color: var(--text-main);
-      border-color: var(--border);
+      border-color: rgba(255, 255, 255, 0.28);
     }
 
     .btn svg { flex-shrink: 0; }
