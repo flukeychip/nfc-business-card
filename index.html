@@ -37,7 +37,12 @@
        Stroke widths preserve the board's own 0.6 / 1.44 / 2.88 hierarchy. */
     :root {
       --trace: var(--accent);   /* set to #C83434 for the board's own red */
-      --t-pad: 52px;            /* clearance so content clears the outer turns */
+      /* The coil is stretched to the viewport, so its innermost turn sits at a
+         FIXED FRACTION of each axis: 8.8% in from the sides, 3.7% from top and
+         bottom. Expressing the clearance in vw/vh tracks that stretch on any
+         screen, instead of guessing a pixel value per breakpoint. */
+      --t-pad-h: calc(8.8vw + 9px);
+      --t-pad-v: calc(3.7vh + 8px);
     }
 
     .pcb-frame {
@@ -72,7 +77,7 @@
       align-items: center;
       justify-content: center;
       /* Keep content clear of the antenna traces on every side. */
-      padding: var(--t-pad);
+      padding: var(--t-pad-v) var(--t-pad-h);
     }
 
     @supports (min-height: 100dvh) {
@@ -210,7 +215,14 @@
     /* Narrow screens: a 34px band eats 68px of a 375px-wide phone, squeezing the
        card enough to wrap the button labels. Thinner band. */
     @media (max-width: 600px) {
-      :root { --t-pad: 34px; }
+      /* The coil frame costs ~84px of width; claw it back inside the card so the
+         copy stops re-wrapping and the buttons stay near the fold. */
+      .card { padding: 1.4rem 1.1rem; }
+      h1 { font-size: 1.25rem; margin-bottom: 1rem; }
+      p { font-size: 0.95rem; margin-bottom: 0.8rem; }
+      .divider { margin: 1.1rem 0; }
+      .buttons { gap: 0.6rem; }
+      .btn { min-height: 50px; }
     }
 
     /* Short screens (older/smaller Androids, and any phone in landscape): claw back
@@ -218,9 +230,7 @@
     @media (max-height: 720px) {
       /* Thinner band still: on a short screen the frame costs both height and
          card width, and narrower text re-wraps into more lines. */
-      :root { --t-pad: 24px; }
-
-      .card { padding: 1.4rem 1.4rem; }
+      .card { padding: 1.2rem 1.1rem; }
       .eyebrow { margin-bottom: 0.85rem; }
       h1 { font-size: 1.2rem; margin-bottom: 0.85rem; }
       p { font-size: 0.92rem; margin-bottom: 0.7rem; }
