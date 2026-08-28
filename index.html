@@ -30,19 +30,17 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     /* ===== NFC ANTENNA FRAME =====
-       The real coil, extracted as vector geometry from the KiCad PDF plot of the
-       board and inlined as SVG. preserveAspectRatio="none" stretches it to any
-       viewport; non-scaling-stroke keeps every trace an even width regardless of
-       how far it is stretched, so the coil never looks squashed in one axis.
-       Stroke widths preserve the board's own 0.6 / 1.44 / 2.88 hierarchy. */
+       The board artwork itself, used as a CSS border-image. The outer strip of
+       the screenshot (the three coil turns) is sliced off and stretched around
+       the viewport; the middle of the image is dropped, so the page background
+       shows through and the light theme is kept.
+
+       Slices measured off the source (528x840 px): the coil ends 46px from the
+       top, 48px from the right, 46px from the bottom, and 60px from the left --
+       the left edge carries the extra feed trace running off-board. */
     :root {
-      --trace: var(--accent);   /* set to #C83434 for the board's own red */
-      /* The coil is stretched to the viewport, so its innermost turn sits at a
-         FIXED FRACTION of each axis: 8.8% in from the sides, 3.7% from top and
-         bottom. Expressing the clearance in vw/vh tracks that stretch on any
-         screen, instead of guessing a pixel value per breakpoint. */
-      --t-pad-h: calc(8.8vw + 9px);
-      --t-pad-v: calc(3.7vh + 8px);
+      --frame-w: 40px;                        /* on-screen thickness of the coil band */
+      --t-pad: calc(var(--frame-w) + 12px);   /* clearance so content clears the coil */
     }
 
     .pcb-frame {
@@ -50,20 +48,9 @@
       inset: 0;
       pointer-events: none;
       z-index: 0;
-      color: var(--trace);
-      opacity: 0.9;
+      border: var(--frame-w) solid transparent;
+      border-image: url('img/board.png') 46 48 46 60 / var(--frame-w) stretch;
     }
-
-    .pcb-frame .coil {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .coil path { vector-effect: non-scaling-stroke; }
-    .coil .t1 { stroke-width: 1; }
-    .coil .t2 { stroke-width: 2; }
-    .coil .t3 { stroke-width: 3.5; }
 
     body {
       font-family: var(--font);
@@ -77,7 +64,7 @@
       align-items: center;
       justify-content: center;
       /* Keep content clear of the antenna traces on every side. */
-      padding: var(--t-pad-v) var(--t-pad-h);
+      padding: var(--t-pad);
     }
 
     @supports (min-height: 100dvh) {
@@ -215,6 +202,7 @@
     /* Narrow screens: a 34px band eats 68px of a 375px-wide phone, squeezing the
        card enough to wrap the button labels. Thinner band. */
     @media (max-width: 600px) {
+      :root { --frame-w: 26px; }
       /* The coil frame costs ~84px of width; claw it back inside the card so the
          copy stops re-wrapping and the buttons stay near the fold. */
       .card { padding: 1.4rem 1.1rem; }
@@ -228,6 +216,7 @@
     /* Short screens (older/smaller Androids, and any phone in landscape): claw back
        vertical space so the two buttons stay reachable without much scrolling. */
     @media (max-height: 720px) {
+      :root { --frame-w: 18px; }
       /* Thinner band still: on a short screen the frame costs both height and
          card width, and narrower text re-wraps into more lines. */
       .card { padding: 1.2rem 1.1rem; }
@@ -250,121 +239,7 @@
 </head>
 <body>
 
-  <div class="pcb-frame" aria-hidden="true">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="232.32 276.96 147.36 238.08" preserveAspectRatio="none" class="coil" aria-hidden="true">
-    <g transform="rotate(90 306.00 396.00)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-    <g class="t1">
-    <path d="M 371.16 400.20 L 368.40 397.44"/>
-    <path d="M 368.40 397.32 L 364.08 393.00"/>
-    <path d="M 376.20 384.12 L 364.56 384.12"/>
-    <path d="M 368.40 397.44 L 368.40 397.32"/>
-    <path d="M 364.56 384.12 L 364.08 384.72"/>
-    <path d="M 363.96 392.88 L 364.08 393.00"/>
-    <path d="M 379.68 400.20 L 371.16 400.20"/>
-    <path d="M 364.08 384.72 L 361.08 381.60"/>
-    <path d="M 355.80 381.84 L 352.80 384.96"/>
-    <path d="M 355.80 377.52 L 355.80 381.84"/>
-    <path d="M 361.08 381.60 L 361.08 377.52"/>
-    <path d="M 352.80 392.88 L 363.96 392.88"/>
-    <path d="M 396.60 380.52 L 402.36 374.76"/>
-    <path d="M 388.80 380.52 L 388.80 379.68"/>
-    <path d="M 397.68 384.12 L 388.80 384.12"/>
-    <path d="M 388.80 379.68 L 387.72 378.48"/>
-    <path d="M 402.36 388.92 L 397.68 384.12"/>
-    <path d="M 389.64 386.76 L 388.80 386.04"/>
-    <path d="M 388.80 380.52 L 396.60 380.52"/>
-    <path d="M 389.64 397.44 L 389.64 386.76"/>
-    <path d="M 384.00 384.72 L 384.00 396.00"/>
-    <path d="M 376.20 386.04 L 376.20 392.52"/>
-    <path d="M 376.20 392.52 L 376.92 393.12"/>
-    <path d="M 384.00 396.00 L 379.68 400.20"/>
-    <path d="M 386.40 382.32 L 384.00 384.72"/>
-    <path d="M 376.20 384.12 L 376.20 382.32"/>
-    <path d="M 388.80 382.32 L 386.40 382.32"/>
-    <path d="M 376.20 380.52 L 376.20 372.84"/>
-    <path d="M 376.20 372.84 L 379.32 369.60"/>
-    <path d="M 387.72 378.48 L 387.72 369.60"/>
-    </g>
-    <g class="t2">
-    <path d="M 356.64 378.84 L 355.08 378.84"/>
-    <path d="M 355.08 378.84 L 355.08 376.32"/>
-    <path d="M 355.08 376.32 L 356.64 376.32"/>
-    <path d="M 356.64 376.32 L 356.64 378.84"/>
-    <path d="M 351.00 386.04 L 351.00 383.88"/>
-    <path d="M 351.00 383.88 L 354.60 383.88"/>
-    <path d="M 354.60 383.88 L 354.60 386.04"/>
-    <path d="M 354.60 386.04 L 351.00 386.04"/>
-    <path d="M 361.80 378.84 L 360.24 378.84"/>
-    <path d="M 360.24 378.84 L 360.24 376.32"/>
-    <path d="M 360.24 376.32 L 361.80 376.32"/>
-    <path d="M 361.80 376.32 L 361.80 378.84"/>
-    <path d="M 351.00 393.96 L 351.00 391.80"/>
-    <path d="M 351.00 391.80 L 354.60 391.80"/>
-    <path d="M 354.60 391.80 L 354.60 393.96"/>
-    <path d="M 354.60 393.96 L 351.00 393.96"/>
-    <path d="M 362.28 385.56 L 362.28 383.76"/>
-    <path d="M 362.28 383.76 L 366.00 383.76"/>
-    <path d="M 366.00 383.76 L 366.00 385.56"/>
-    <path d="M 366.00 385.56 L 362.28 385.56"/>
-    <path d="M 362.28 393.96 L 362.28 392.16"/>
-    <path d="M 362.28 392.16 L 366.00 392.16"/>
-    <path d="M 366.00 392.16 L 366.00 393.96"/>
-    <path d="M 366.00 393.96 L 362.28 393.96"/>
-    <path d="M 380.28 371.52 L 378.48 371.52"/>
-    <path d="M 378.48 371.52 L 378.48 367.80"/>
-    <path d="M 378.48 367.80 L 380.28 367.80"/>
-    <path d="M 380.28 367.80 L 380.28 371.52"/>
-    <path d="M 388.68 371.52 L 386.76 371.52"/>
-    <path d="M 386.76 371.52 L 386.76 367.80"/>
-    <path d="M 386.76 367.80 L 388.68 367.80"/>
-    <path d="M 388.68 367.80 L 388.68 371.52"/>
-    <path d="M 380.28 357.36 L 378.48 357.36"/>
-    <path d="M 378.48 357.36 L 378.48 353.64"/>
-    <path d="M 378.48 353.64 L 380.28 353.64"/>
-    <path d="M 380.28 353.64 L 380.28 357.36"/>
-    <path d="M 388.68 357.36 L 386.76 357.36"/>
-    <path d="M 386.76 357.36 L 386.76 353.64"/>
-    <path d="M 386.76 353.64 L 388.68 353.64"/>
-    <path d="M 388.68 353.64 L 388.68 357.36"/>
-    </g>
-    <g class="t3">
-    <path d="M 191.88 469.68 L 186.96 464.76"/>
-    <path d="M 194.04 465.48 L 191.16 462.60"/>
-    <path d="M 191.16 462.60 L 191.16 333.60"/>
-    <path d="M 196.92 461.16 L 195.48 459.72"/>
-    <path d="M 186.96 464.76 L 186.96 331.56"/>
-    <path d="M 425.04 466.20 L 421.56 469.68"/>
-    <path d="M 425.04 325.80 L 425.04 466.20"/>
-    <path d="M 421.56 322.32 L 425.04 325.80"/>
-    <path d="M 420.84 327.96 L 420.84 464.04"/>
-    <path d="M 419.40 326.52 L 420.84 327.96"/>
-    <path d="M 420.84 464.04 L 419.40 465.48"/>
-    <path d="M 421.56 469.68 L 191.88 469.68"/>
-    <path d="M 194.04 330.84 L 413.76 330.84"/>
-    <path d="M 196.92 335.04 L 375.84 335.04"/>
-    <path d="M 419.40 465.48 L 194.04 465.48"/>
-    <path d="M 415.08 461.16 L 196.92 461.16"/>
-    <path d="M 409.44 367.68 L 402.36 374.76"/>
-    <path d="M 416.52 333.60 L 416.52 459.72"/>
-    <path d="M 416.52 459.72 L 415.08 461.16"/>
-    <path d="M 409.44 366.00 L 409.44 367.68"/>
-    <path d="M 402.36 358.92 L 409.44 366.00"/>
-    <path d="M 195.48 336.48 L 196.92 335.04"/>
-    <path d="M 186.96 331.56 L 191.88 326.52"/>
-    <path d="M 195.48 459.72 L 195.48 336.48"/>
-    <path d="M 191.16 333.60 L 194.04 330.84"/>
-    <path d="M 413.76 330.84 L 416.52 333.60"/>
-    <path d="M 375.84 335.04 L 379.32 338.52"/>
-    <path d="M 191.88 326.52 L 419.40 326.52"/>
-    <path d="M 388.20 322.32 L 421.56 322.32"/>
-    <path d="M 387.72 355.44 L 387.72 338.52"/>
-    <path d="M 379.32 369.60 L 379.32 364.80"/>
-    <path d="M 387.72 369.60 L 387.72 355.44"/>
-    <path d="M 379.32 364.80 L 379.32 355.44"/>
-    <path d="M 379.32 338.52 L 379.32 355.44"/>
-    </g>
-    </g></svg>
-  </div>
+  <div class="pcb-frame" aria-hidden="true"></div>
 
   <main class="card">
     <div class="eyebrow">Tap successful</div>
