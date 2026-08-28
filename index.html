@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alexander Arens — NFC Business Card</title>
+  <meta name="description" content="Alexander Arens — electrical engineering student at Purdue. You tapped my PCB business card. Here's my LinkedIn and project portfolio." />
+  <meta name="theme-color" content="#0057B8" />
+
+  <!-- Recruiters land here from a phone tap, often on bad career-fair cell service.
+       Everything is inlined so this page is a single request. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>" />
+
+  <style>
+    :root {
+      --bg-color: #FAFAFC;
+      --text-main: #111111;
+      --text-muted: #666666;
+      --accent: #0057B8;
+      --card-bg: #FFFFFF;
+      --border: #EAEAEA;
+      --font: 'Inter', Helvetica, Arial, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+    }
+
+    @supports (min-height: 100dvh) {
+      body { min-height: 100dvh; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+      padding: 2.25rem 1.75rem;
+      max-width: 560px;
+      width: 100%;
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Small pulsing dot — a quiet nod to the fact that a radio link just happened. */
+    .eyebrow::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .eyebrow::before { animation: none; }
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: -0.4px;
+      margin-bottom: 1.25rem;
+    }
+
+    h1 .worked {
+      color: var(--accent);
+    }
+
+    p {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    p strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.75rem 0;
+      border: 0;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      /* Generous height — this is tapped with a thumb, one-handed, standing up. */
+      min-height: 54px;
+      padding: 0.9rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #FFFFFF;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--text-main);
+      border-color: var(--border);
+    }
+
+    .btn svg { flex-shrink: 0; }
+
+    footer {
+      margin-top: 1.75rem;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media (min-width: 600px) {
+      .card { padding: 3rem 2.75rem; }
+      h1 { font-size: 1.85rem; }
+      .buttons { flex-direction: row; }
+      .btn { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="card">
+    <div class="eyebrow">Tap successful</div>
+
+    <h1>
+      If you're reading this, I handed you my business card at the Fall 2026
+      Industrial Roundtable &mdash; and <span class="worked">it worked</span>.
+    </h1>
+
+    <p>
+      That card is a <strong>PCB I designed and built myself</strong>: a custom-routed
+      NFC antenna and transponder, no battery anywhere on it. It borrows power from
+      your phone's radio field to serve you this page.
+    </p>
+
+    <p>
+      I'm <strong>Alexander Arens</strong>, a junior at Purdue studying electrical
+      engineering. I build hardware &mdash; robotics, embedded systems, power
+      electronics, and computer vision. Recently that's meant a six-axis robot arm
+      running on cycloidal drives I designed, an AR physics simulation projected onto
+      my wall, and a handful of buck converters along the way.
+    </p>
+
+    <p>
+      If any of that is the kind of thing your team does, I'd genuinely like to talk.
+    </p>
+
+    <hr class="divider" />
+
+    <div class="buttons">
+      <!-- TODO: replace with Alexander's real LinkedIn URL before publishing -->
+      <a class="btn btn-primary" href="https://www.linkedin.com/in/REPLACE-ME">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8.98h4.56V24H.22V8.98zm7.98 0h4.37v2.05h.06c.61-1.15 2.1-2.37 4.32-2.37 4.62 0 5.47 3.04 5.47 7v8.34h-4.56v-7.4c0-1.77-.03-4.04-2.46-4.04-2.47 0-2.85 1.93-2.85 3.92V24H8.2V8.98z"/>
+        </svg>
+        Connect on LinkedIn
+      </a>
+
+      <a class="btn btn-outline" href="https://flukeychip.github.io/Project-Portfolio/">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        See my projects
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    Designed, routed, and assembled by hand &middot;
+    <a id="email-link">Email me</a>
+  </footer>
+
+  <script>
+    // Email assembled at runtime so scrapers parsing raw HTML get nothing,
+    // while humans (and Google, which runs JS) still reach it.
+    (function () {
+      var u = 'alexander.arens04';
+      var d = 'gmail.com';
+      var a = document.getElementById('email-link');
+      if (a) { a.href = 'mailto:' + u + '@' + d; }
+    })();
+  </script>
+
+</body>
+</html>
