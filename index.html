@@ -49,6 +49,16 @@
       background: url('img/board.svg') center / 100% 100% no-repeat;
     }
 
+    /* Content must sit INSIDE the innermost coil turn, never on top of it. Because
+       the board is stretched to the viewport, that turn sits at a fixed fraction of
+       each axis rather than a fixed pixel inset. Measured off board.svg: the inner
+       edge of the innermost turn is 8.3% from the left, 11.0% from the right, and
+       5.2% from top and bottom. Taking the larger of each pair keeps it symmetric. */
+    :root {
+      --t-pad-h: calc(11vw + 10px);
+      --t-pad-v: calc(5.2vh + 10px);
+    }
+
     body {
       font-family: var(--font);
       background-color: var(--bg-color);
@@ -61,7 +71,7 @@
       align-items: center;
       justify-content: center;
       /* Keep content clear of the antenna traces on every side. */
-      padding: var(--t-pad);
+      padding: var(--t-pad-v) var(--t-pad-h);
     }
 
     @supports (min-height: 100dvh) {
@@ -185,8 +195,23 @@
 
     .btn svg { flex-shrink: 0; }
 
+    /* A hint, not a banner: small, muted, and directly under the portfolio button so
+       it reads as a footnote to that link rather than a warning about the page. */
+    .hint {
+      margin: 0.7rem 0 0;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.4px;
+      color: rgba(255, 255, 255, 0.42);
+    }
+
+    /* Lives inside the card, so it is guaranteed to stay within the coil at any
+       viewport rather than spilling past the bottom turn. */
     footer {
-      margin-top: 1rem;
+      margin-top: 1.1rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.10);
       text-align: center;
       font-family: var(--font-mono);
       font-size: 0.7rem;
@@ -203,31 +228,38 @@
     /* Narrow screens: a 34px band eats 68px of a 375px-wide phone, squeezing the
        card enough to wrap the button labels. Thinner band. */
     @media (max-width: 600px) {
-      :root { --frame-w: 26px; }
       /* The coil frame costs ~84px of width; claw it back inside the card so the
          copy stops re-wrapping and the buttons stay near the fold. */
-      .card { padding: 1.4rem 1.1rem; }
-      h1 { font-size: 1.25rem; margin-bottom: 1rem; }
-      p { font-size: 0.95rem; margin-bottom: 0.8rem; }
-      .divider { margin: 1.1rem 0; }
-      .buttons { gap: 0.6rem; }
-      .btn { min-height: 50px; }
+      .card { padding: 1.15rem 1rem; }
+      .eyebrow { margin-bottom: 0.8rem; }
+      h1 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+      p { font-size: 0.9rem; margin-bottom: 0.5rem; }
+      .divider { margin: 0.7rem 0; }
+      .buttons { gap: 0.5rem; }
+      .btn { min-height: 46px; font-size: 0.95rem; }
+      .hint { margin-top: 0.5rem; }
+      /* Dropped on phones: it is decorative, and its email is already printed on the
+         physical card next to the QR. Containment inside the coil wins. */
+      footer { display: none; }
+      footer { margin-top: 0.6rem; }
     }
 
     /* Short screens (older/smaller Androids, and any phone in landscape): claw back
        vertical space so the two buttons stay reachable without much scrolling. */
+    /* Short screens: the gap inside the coil shrinks with the viewport (only ~573px
+       tall at 640px), so everything has to come down together to stay contained. The
+       footer is decorative and is the first thing to go. */
     @media (max-height: 720px) {
-      :root { --frame-w: 18px; }
-      /* Thinner band still: on a short screen the frame costs both height and
-         card width, and narrower text re-wraps into more lines. */
-      .card { padding: 1.2rem 1.1rem; }
-      .eyebrow { margin-bottom: 0.85rem; }
-      h1 { font-size: 1.2rem; margin-bottom: 0.85rem; }
-      p { font-size: 0.92rem; margin-bottom: 0.7rem; }
-      .divider { margin: 1rem 0; }
-      .btn { min-height: 48px; padding: 0.7rem 1.25rem; }
-      .buttons { gap: 0.6rem; }
-      footer { margin-top: 0.8rem; }
+      body { line-height: 1.5; }
+      .card { padding: 0.9rem 0.9rem; }
+      .eyebrow { margin-bottom: 0.5rem; font-size: 0.65rem; }
+      h1 { font-size: 1.02rem; margin-bottom: 0.6rem; line-height: 1.25; }
+      p { font-size: 0.83rem; margin-bottom: 0.45rem; }
+      .divider { margin: 0.6rem 0; }
+      .buttons { gap: 0.45rem; }
+      .btn { min-height: 42px; font-size: 0.9rem; padding: 0.6rem 1rem; }
+      .hint { margin-top: 0.45rem; font-size: 0.62rem; }
+      footer { margin-top: 0.7rem; padding-top: 0.6rem; font-size: 0.62rem; }
     }
 
     @media (min-width: 600px) {
@@ -252,14 +284,15 @@
 
     <p>
       That card is a <strong>PCB I designed and built myself</strong> &mdash; custom-routed
-      NFC antenna and transponder, no battery. It borrows power from your phone's radio
-      field to serve you this page.
+      NFC antenna, no battery, powered by your phone's radio field.
+      <strong>What frames this page is that same board</strong>: the coil around your
+      screen is the antenna you just tapped.
     </p>
 
     <p>
-      I'm <strong>Alexander Arens</strong>, a junior at Purdue studying electrical
-      engineering. I build hardware: robotics, embedded systems, power electronics, and
-      computer vision. If that's the kind of thing your team does, I'd like to talk.
+      I'm <strong>Alexander Arens</strong>, a senior at Purdue studying electrical
+      engineering. I build hardware: robotics, embedded systems, and power electronics.
+      If that's what your team does, I'd like to talk.
     </p>
 
     <hr class="divider" />
@@ -279,13 +312,15 @@
         </svg>
         See my projects
       </a>
+
+      <p class="hint">Best viewed on a laptop</p>
     </div>
+
+    <footer>
+        Routed and assembled by hand &middot; <a id="email-link">Email me</a>
+      </footer>
   </main>
 
-  <footer>
-    Designed, routed, and assembled by hand &middot;
-    <a id="email-link">Email me</a>
-  </footer>
 
   <script>
     // Email assembled at runtime so scrapers parsing raw HTML get nothing,
