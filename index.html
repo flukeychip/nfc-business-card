@@ -7,18 +7,18 @@
   <meta name="description" content="Alexander Arens — electrical engineering student at Purdue. You tapped my PCB business card. Here's my LinkedIn and project portfolio." />
   <meta name="theme-color" content="#232D3A" />
 
-  <!-- Recruiters land here from a phone tap, often on bad career-fair cell service.
-       Everything is inlined so this page is a single request. -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <!-- Recruiters land here from a phone tap, on saturated career-fair cell service.
+       There are NO external requests: no font CDN, no analytics, no frameworks. The
+       only subresource is the board artwork. A blocking stylesheet from another host
+       is the single most likely way this page fails when signal is bad, so the type
+       is a system stack instead. -->
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>" />
 
   <style>
     :root {
-      /* Board canvas colour (sampled from board.png) — sits behind the artwork as
-         a fallback and fills any area the image doesn't cover. */
+      /* Board canvas colour (sampled from the board artwork) — painted behind it, so
+         if board.svg ever fails to load the page is still a readable dark card. */
       --bg-color: #232D3A;
       --page-muted: rgba(255, 255, 255, 0.55);   /* text outside the card */
       /* The card is now glass over the board, so its text is light, not dark. */
@@ -28,8 +28,8 @@
       --accent-light: #6BB2F5;           /* accent TEXT on the dark card */
       --card-bg: rgba(16, 22, 31, 0.80);
       --border: rgba(255, 255, 255, 0.16);
-      --font: 'Inter', Helvetica, Arial, sans-serif;
-      --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -57,6 +57,10 @@
     :root {
       --t-pad-h: calc(11vw + 10px);
       --t-pad-v: calc(5.2vh + 10px);
+    }
+
+    @supports (height: 100dvh) {
+      :root { --t-pad-v: calc(5.2dvh + 10px); }
     }
 
     body {
@@ -92,6 +96,30 @@
       width: 100%;
       position: relative;
       z-index: 1;
+      /* HARD GUARANTEE. Whatever the viewport, orientation, or the visitor's font
+         scaling, the card cannot grow past the gap inside the coil. If content does
+         not fit it scrolls INSIDE the card, so text is clipped by the card edge and
+         can never ride over an antenna trace. Everything else here is tuning to make
+         that scroll unnecessary; this is the backstop for when tuning is wrong. */
+      max-height: calc(100vh - 2 * var(--t-pad-v));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.25) transparent;
+    }
+
+    @supports (height: 100dvh) {
+      .card { max-height: calc(100dvh - 2 * var(--t-pad-v)); }
+    }
+
+    .card::-webkit-scrollbar { width: 4px; }
+    .card::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.22); border-radius: 4px; }
+
+    /* Without backdrop-filter the card is only 80% opaque over a busy board, which
+       hurts legibility. Go nearly solid when blur is unavailable. */
+    @supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
+      .card { background: rgba(14, 19, 27, 0.95); }
     }
 
     .eyebrow {
@@ -203,7 +231,7 @@
       font-family: var(--font-mono);
       font-size: 0.68rem;
       letter-spacing: 0.4px;
-      color: rgba(255, 255, 255, 0.42);
+      color: rgba(255, 255, 255, 0.58);
     }
 
     /* Lives inside the card, so it is guaranteed to stay within the coil at any
@@ -244,20 +272,32 @@
       footer { margin-top: 0.6rem; }
     }
 
+    /* 320px-wide phones: iPhone SE 1st gen, budget Androids, and any iPhone with
+       Display Zoom turned on (which reports 320pt on a 375pt device). */
+    @media (max-width: 360px) {
+      .card { padding: 0.95rem 0.85rem; }
+      h1 { font-size: 1.05rem; margin-bottom: 0.7rem; }
+      p { font-size: 0.85rem; margin-bottom: 0.5rem; }
+      .eyebrow { font-size: 0.62rem; letter-spacing: 1px; margin-bottom: 0.7rem; }
+      .divider { margin: 0.7rem 0; }
+      .btn { min-height: 44px; font-size: 0.9rem; padding: 0.6rem 0.9rem; gap: 0.45rem; }
+      .hint { font-size: 0.6rem; margin-top: 0.45rem; }
+    }
+
     /* Short screens (older/smaller Androids, and any phone in landscape): claw back
        vertical space so the two buttons stay reachable without much scrolling. */
     /* Short screens: the gap inside the coil shrinks with the viewport (only ~573px
        tall at 640px), so everything has to come down together to stay contained. The
        footer is decorative and is the first thing to go. */
     @media (max-height: 720px) {
-      body { line-height: 1.5; }
-      .card { padding: 0.9rem 0.9rem; }
-      .eyebrow { margin-bottom: 0.5rem; font-size: 0.65rem; }
-      h1 { font-size: 1.02rem; margin-bottom: 0.6rem; line-height: 1.25; }
-      p { font-size: 0.83rem; margin-bottom: 0.45rem; }
-      .divider { margin: 0.6rem 0; }
+      body { line-height: 1.45; }
+      .card { padding: 0.75rem 0.8rem; }
+      .eyebrow { margin-bottom: 0.4rem; font-size: 0.62rem; }
+      h1 { font-size: 0.98rem; margin-bottom: 0.5rem; line-height: 1.22; }
+      p { font-size: 0.8rem; margin-bottom: 0.38rem; }
+      .divider { margin: 0.5rem 0; }
       .buttons { gap: 0.45rem; }
-      .btn { min-height: 42px; font-size: 0.9rem; padding: 0.6rem 1rem; }
+      .btn { min-height: 44px; font-size: 0.9rem; padding: 0.6rem 1rem; }
       .hint { margin-top: 0.45rem; font-size: 0.62rem; }
       footer { margin-top: 0.7rem; padding-top: 0.6rem; font-size: 0.62rem; }
     }
@@ -265,8 +305,39 @@
     @media (min-width: 600px) {
       .card { padding: 3rem 2.75rem; }
       h1 { font-size: 1.85rem; }
-      .buttons { flex-direction: row; }
+      /* The hint lives inside .buttons, so without wrapping it becomes a third item
+         in the row and stretches both buttons to its height. */
+      .buttons { flex-direction: row; flex-wrap: wrap; align-items: stretch; }
       .btn { flex: 1; }
+      .hint { flex: 1 0 100%; }
+    }
+
+    /* Landscape phones. The gap inside the coil is only ~336px tall at 667x375, so a
+       single stacked column cannot fit. Use the width instead: prose on the left,
+       actions on the right. Without this the card overflows by ~270px. */
+    @media (orientation: landscape) and (max-height: 560px) {
+      .card {
+        max-width: 860px;
+        display: grid;
+        /* minmax(0,…) is essential: without it the button labels set a min-content
+           floor and the actions column steals width from the prose, which makes the
+           headline wrap to ~300px tall and blows the height budget. */
+        grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+        gap: 1.2rem;
+        align-items: center;
+        padding: 0.9rem 1.1rem;
+      }
+      .lede, .buttons { min-width: 0; }
+      .buttons { flex-direction: column; }
+      .divider { display: none; }
+      .buttons { align-self: center; }
+      footer { display: none; }
+      .eyebrow { margin-bottom: 0.5rem; }
+      h1 { font-size: 0.95rem; line-height: 1.25; margin-bottom: 0.5rem; }
+      p { font-size: 0.78rem; margin-bottom: 0.4rem; }
+      p:last-child { margin-bottom: 0; }
+      .btn { min-height: 40px; font-size: 0.85rem; padding: 0.5rem 0.8rem; }
+      .hint { font-size: 0.58rem; margin-top: 0.4rem; }
     }
   </style>
 </head>
@@ -275,6 +346,7 @@
   <div class="pcb-frame" aria-hidden="true"></div>
 
   <main class="card">
+   <div class="lede">
     <div class="eyebrow">Tap successful</div>
 
     <h1>
@@ -294,6 +366,8 @@
       engineering. I build hardware: robotics, embedded systems, and power electronics.
       If that's what your team does, I'd like to talk.
     </p>
+
+   </div>
 
     <hr class="divider" />
 
