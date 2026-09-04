@@ -52,8 +52,9 @@
     /* Content must sit INSIDE the innermost coil turn, never on top of it. Because
        the board is stretched to the viewport, that turn sits at a fixed fraction of
        each axis rather than a fixed pixel inset. Measured off board.svg: the inner
-       edge of the innermost turn is 8.3% from the left, 11.0% from the right, and
-       5.2% from top and bottom. Taking the larger of each pair keeps it symmetric. */
+       edge of the innermost turn is 9.99% from the left, 9.22% from the right, 4.62%
+       from the top and 5.83% from the bottom. The values below are rounded outward
+       from those so the content always lands inside, never on, the turn. */
     :root {
       --t-pad-h: calc(11vw + 10px);
       --t-pad-v: calc(5.2vh + 10px);
@@ -96,11 +97,11 @@
       z-index: 1;
       /* HARD GUARANTEE, two constraints at once.
          Horizontally: inside the innermost coil turn (via the body padding).
-         Vertically: above the populated area of the board. Measured off board.svg,
-         the components run from 67.6% to 93.7% down, so the clear band is the coil
-         top (5.23%) to 67.6%. Content is capped to that band and scrolls INSIDE
-         itself if it will not fit, so text can never sit on a trace or a part. */
-      max-height: calc(62.4vh - 20px);
+         Vertically: above the populated area of the board, which starts 67.06% down.
+         The clear band is the coil top to there. Content is capped to that band and
+         scrolls INSIDE itself if it will not fit, so text can never sit on a trace or
+         a part. */
+      max-height: calc(61.5vh - 20px);
       overflow-y: auto;
       overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
@@ -109,7 +110,7 @@
     }
 
     @supports (height: 100dvh) {
-      .card { max-height: calc(62.4dvh - 20px); }
+      .card { max-height: calc(61.5dvh - 20px); }
     }
 
     .card::-webkit-scrollbar { width: 4px; }
@@ -295,7 +296,7 @@
     }
 
     /* Desktop and tablet: stop stretching the board.
-       On a phone the viewport is close enough to the board's 0.6325 aspect that
+       On a phone the viewport is close enough to the board's 0.6284 aspect that
        filling it looks fine. On a 1920x1000 window it means ~3x horizontal
        distortion -- the traces become slabs and the components balloon. Here the
        board keeps its true proportions and is centred, and because the page
@@ -304,7 +305,7 @@
        the content still lands inside the innermost coil turn. */
     @media (min-width: 700px) and (min-height: 500px) {
       :root {
-        --board-w: min(100vw, calc(100vh * 0.6325));
+        --board-w: min(100vw, calc(100vh * 0.6284));
         --t-pad-h: calc((100vw - var(--board-w)) / 2 + var(--board-w) * 0.11 + 10px);
       }
       .pcb-frame {
