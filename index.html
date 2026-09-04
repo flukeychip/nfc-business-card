@@ -46,7 +46,7 @@
       inset: 0;
       pointer-events: none;
       z-index: 0;
-      background: url('img/board.svg') center / 100% 100% no-repeat;
+      background: url('img/board.svg?v=3') center / 100% 100% no-repeat;
     }
 
     /* Content must sit INSIDE the innermost coil turn, never on top of it. Because
@@ -118,9 +118,9 @@
 
     h1 {
       /* Printed lettering: even weight, open leading, no tight UI tracking. */
-      font-size: clamp(1.05rem, 4.7vw, 1.6rem);
+      font-size: clamp(1.1rem, 5vw, 1.8rem);
       font-weight: 500;
-      line-height: 1.38;
+      line-height: 1.22;
       letter-spacing: 0.1px;
       color: #FFFFFF;
       margin-bottom: 0.95rem;
@@ -132,8 +132,8 @@
 
     p {
       color: rgba(255, 255, 255, 0.82);
-      margin-bottom: 0.75rem;
-      font-size: 0.9rem;
+      margin-bottom: 0.85rem;
+      font-size: clamp(0.95rem, 3.9vw, 1.15rem);
       line-height: 1.55;
     }
 
@@ -161,7 +161,7 @@
       justify-content: center;
       gap: 0.6rem;
       /* Generous height — this is tapped with a thumb, one-handed, standing up. */
-      min-height: 48px;
+      min-height: 50px;
       padding: 0.7rem 1.2rem;
       /* Squared off like a silkscreen outline rather than a UI pill. */
       border-radius: 6px;
@@ -169,7 +169,7 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       font-weight: 500;
-      font-size: 0.78rem;
+      font-size: 0.85rem;
       /* a wrapped label doubles the button height and stops reading as a label */
       white-space: nowrap;
       text-decoration: none;
@@ -181,8 +181,8 @@
     .btn:active { transform: scale(0.98); }
 
     .btn-primary {
-      background-color: rgba(255, 255, 255, 0.14);
-      border-color: rgba(255, 255, 255, 0.9);
+      background-color: var(--accent);
+      border-color: var(--accent);
       color: #FFFFFF;
     }
 
@@ -230,8 +230,11 @@
       /* The coil frame costs ~84px of width; claw it back inside the card so the
          copy stops re-wrapping and the buttons stay near the fold. */
       .card { padding: 1.15rem 1rem; }
-      h1 { font-size: 1.15rem; margin-bottom: 0.8rem; }
-      p { font-size: 0.9rem; margin-bottom: 0.5rem; }
+      h1 { font-size: clamp(1rem, 4.6vw, 1.7rem); margin-bottom: 0.5rem; }
+      p { font-size: clamp(0.9rem, 3.6vw, 1.05rem); margin-bottom: 0.35rem; }
+      .buttons { gap: 0.45rem; }
+      .btn { min-height: 46px; }
+      .hint { margin-top: 0.4rem; }
       .lead-in {
       color: #FFFFFF;
       margin-bottom: 0;
@@ -251,8 +254,11 @@
        Display Zoom turned on (which reports 320pt on a 375pt device). */
     @media (max-width: 360px) {
       .card { padding: 0.95rem 0.85rem; }
-      h1 { font-size: 1.05rem; margin-bottom: 0.7rem; }
-      p { font-size: 0.85rem; margin-bottom: 0.5rem; }
+      h1 { font-size: clamp(1rem, 4.6vw, 1.7rem); margin-bottom: 0.5rem; }
+      p { font-size: clamp(0.9rem, 3.6vw, 1.05rem); margin-bottom: 0.35rem; }
+      .buttons { gap: 0.45rem; }
+      .btn { min-height: 46px; }
+      .hint { margin-top: 0.4rem; }
       .lead-in {
       color: #FFFFFF;
       margin-bottom: 0;
@@ -271,8 +277,11 @@
     @media (max-height: 720px) {
       body { line-height: 1.45; }
       .card { padding: 0.75rem 0.8rem; }
-      h1 { font-size: 0.98rem; margin-bottom: 0.5rem; line-height: 1.22; }
-      p { font-size: 0.8rem; margin-bottom: 0.38rem; }
+      h1 { font-size: clamp(0.95rem, 4.3vw, 1.35rem); margin-bottom: 0.45rem; line-height: 1.2; }
+      p { font-size: clamp(0.8rem, 3.2vw, 0.95rem); margin-bottom: 0.32rem; }
+      .buttons { gap: 0.4rem; }
+      .btn { min-height: 44px; font-size: 0.78rem; }
+      .hint { margin-top: 0.35rem; font-size: 0.58rem; }
       .lead-in {
       color: #FFFFFF;
       margin-bottom: 0;
@@ -392,10 +401,13 @@
     </h1>
 
     <p>
-      I'm Alexander Arens, a senior at Purdue studying electrical engineering.
+      I'm Alexander Arens, a senior at Purdue studying electrical engineering. I build
+      hardware: robotics, embedded systems, and power electronics.
     </p>
 
-    <p class="lead-in">Interested in how I built this? See my projects below.</p>
+    <p class="lead-in">
+      Interested in how I built this? If that's what your team does, I'd like to talk.
+    </p>
 
    </div>
 
