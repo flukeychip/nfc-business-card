@@ -88,7 +88,6 @@
       background: var(--card-bg);
       -webkit-backdrop-filter: blur(14px) saturate(120%);
       backdrop-filter: blur(14px) saturate(120%);
-      border: 1px solid var(--border);
       border-radius: 16px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
       padding: 1.85rem 1.5rem;
@@ -122,39 +121,6 @@
       .card { background: rgba(14, 19, 27, 0.95); }
     }
 
-    .eyebrow {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--accent-light);
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1.25rem;
-    }
-
-    /* Small pulsing dot — a quiet nod to the fact that a radio link just happened. */
-    .eyebrow::before {
-      content: '';
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--accent-light);
-      flex-shrink: 0;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: 0.4; transform: scale(0.8); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .eyebrow::before { animation: none; }
-    }
-
     h1 {
       font-size: 1.35rem;
       font-weight: 800;
@@ -171,11 +137,6 @@
       color: var(--text-muted);
       margin-bottom: 1rem;
       font-size: 1rem;
-    }
-
-    p strong {
-      color: var(--text-main);
-      font-weight: 600;
     }
 
     .divider {
@@ -259,7 +220,6 @@
       /* The coil frame costs ~84px of width; claw it back inside the card so the
          copy stops re-wrapping and the buttons stay near the fold. */
       .card { padding: 1.15rem 1rem; }
-      .eyebrow { margin-bottom: 0.8rem; }
       h1 { font-size: 1.15rem; margin-bottom: 0.8rem; }
       p { font-size: 0.9rem; margin-bottom: 0.5rem; }
       .divider { margin: 0.7rem 0; }
@@ -278,7 +238,6 @@
       .card { padding: 0.95rem 0.85rem; }
       h1 { font-size: 1.05rem; margin-bottom: 0.7rem; }
       p { font-size: 0.85rem; margin-bottom: 0.5rem; }
-      .eyebrow { font-size: 0.62rem; letter-spacing: 1px; margin-bottom: 0.7rem; }
       .divider { margin: 0.7rem 0; }
       .btn { min-height: 44px; font-size: 0.9rem; padding: 0.6rem 0.9rem; gap: 0.45rem; }
       .hint { font-size: 0.6rem; margin-top: 0.45rem; }
@@ -292,7 +251,6 @@
     @media (max-height: 720px) {
       body { line-height: 1.45; }
       .card { padding: 0.75rem 0.8rem; }
-      .eyebrow { margin-bottom: 0.4rem; font-size: 0.62rem; }
       h1 { font-size: 0.98rem; margin-bottom: 0.5rem; line-height: 1.22; }
       p { font-size: 0.8rem; margin-bottom: 0.38rem; }
       .divider { margin: 0.5rem 0; }
@@ -374,7 +332,6 @@
       .divider { display: none; }
       .buttons { align-self: center; }
       footer { display: none; }
-      .eyebrow { margin-bottom: 0.5rem; }
       h1 { font-size: 0.95rem; line-height: 1.25; margin-bottom: 0.5rem; }
       p { font-size: 0.78rem; margin-bottom: 0.4rem; }
       p:last-child { margin-bottom: 0; }
@@ -389,22 +346,20 @@
 
   <main class="card">
    <div class="lede">
-    <div class="eyebrow">Tap successful</div>
-
     <h1>
       If you're reading this, I handed you my business card at the Fall 2026
       Industrial Roundtable &mdash; and <span class="worked">it worked</span>.
     </h1>
 
     <p>
-      That card is a <strong>PCB I designed myself</strong> &mdash; a custom NFC antenna, no battery,
+      That card is a PCB I designed myself &mdash; a custom NFC antenna, no battery,
       powered by your phone's radio field.
-      <strong>What frames this page is that same board</strong>: the coil around your
+      What frames this page is that same board: the coil around your
       screen is the antenna you just tapped.
     </p>
 
     <p>
-      I'm <strong>Alexander Arens</strong>, a senior at Purdue studying electrical
+      I'm Alexander Arens, a senior at Purdue studying electrical
       engineering. I build hardware: robotics, embedded systems, and power electronics.
       If that's what your team does, I'd like to talk.
     </p>
