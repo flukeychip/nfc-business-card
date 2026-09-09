@@ -46,15 +46,15 @@
       inset: 0;
       pointer-events: none;
       z-index: 0;
-      background: url('img/board.svg?v=3') center / 100% 100% no-repeat;
+      background: url('img/board.svg?v=4') center / 100% 100% no-repeat;
     }
 
     /* Content must sit INSIDE the innermost coil turn, never on top of it. Because
        the board is stretched to the viewport, that turn sits at a fixed fraction of
-       each axis rather than a fixed pixel inset. Measured off board.svg: the inner
-       edge of the innermost turn is 9.99% from the left, 9.22% from the right, 4.62%
-       from the top and 5.83% from the bottom. The values below are rounded outward
-       from those so the content always lands inside, never on, the turn. */
+       each axis rather than a fixed pixel inset. Re-measured after the board was
+       de-mirrored: the inner edge of the innermost turn is 9.99% from the left,
+       9.22% from the right, 4.62% from the top and 5.83% from the bottom. The
+       values below are rounded outward so content lands inside, never on, a turn. */
     :root {
       --t-pad-h: calc(11vw + 10px);
       --t-pad-v: calc(5.2vh + 10px);
@@ -74,8 +74,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      /* Text sits high on the board the way silkscreen does, not centred in a panel. */
-      justify-content: flex-start;
+      justify-content: center;
       /* Keep content clear of the antenna traces on every side. */
       padding: var(--t-pad-v) var(--t-pad-h);
     }
@@ -85,23 +84,25 @@
     }
 
     .card {
-      /* Not a panel any more. The text is printed straight onto the board, so this
-         element is invisible -- it exists only as the containment box that keeps
-         everything inside the coil. */
-      background: none;
-      padding: 0;
-      text-align: left;
+      /* Translucent so the board reads through it, blurred so the traces behind
+         never fight the text. */
+      background: var(--card-bg);
+      -webkit-backdrop-filter: blur(14px) saturate(120%);
+      backdrop-filter: blur(14px) saturate(120%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
+      padding: 1.6rem 1.45rem;
       max-width: 560px;
       width: 100%;
       position: relative;
       z-index: 1;
-      /* HARD GUARANTEE, two constraints at once.
-         Horizontally: inside the innermost coil turn (via the body padding).
-         Vertically: above the populated area of the board, which starts 67.06% down.
-         The clear band is the coil top to there. Content is capped to that band and
-         scrolls INSIDE itself if it will not fit, so text can never sit on a trace or
-         a part. */
-      max-height: calc(61.5vh - 20px);
+      /* HARD GUARANTEE. Whatever the viewport, orientation, or the visitor's font
+         scaling, the card cannot grow past the gap inside the coil. If content does
+         not fit it scrolls INSIDE the card, so text is clipped by the card edge and
+         can never ride over an antenna trace. Everything else here is tuning to make
+         that scroll unnecessary; this is the backstop for when tuning is wrong. */
+      max-height: calc(100vh - 2 * var(--t-pad-v));
       overflow-y: auto;
       overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
@@ -110,42 +111,78 @@
     }
 
     @supports (height: 100dvh) {
-      .card { max-height: calc(61.5dvh - 20px); }
+      .card { max-height: calc(100dvh - 2 * var(--t-pad-v)); }
     }
 
     .card::-webkit-scrollbar { width: 4px; }
     .card::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.22); border-radius: 4px; }
 
-    h1 {
-      /* Printed lettering: even weight, open leading, no tight UI tracking. */
-      font-size: clamp(1.1rem, 5vw, 1.8rem);
+    /* Without backdrop-filter the card is only 80% opaque over a busy board, which
+       hurts legibility. Go nearly solid when blur is unavailable. */
+    @supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
+      .card { background: rgba(14, 19, 27, 0.95); }
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent-light);
       font-weight: 500;
-      line-height: 1.22;
-      letter-spacing: 0.1px;
-      color: #FFFFFF;
-      margin-bottom: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Small pulsing dot — a quiet nod to the fact that a radio link just happened. */
+    .eyebrow::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      flex-shrink: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .eyebrow::before { animation: none; }
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: -0.4px;
+      margin-bottom: 1rem;
     }
 
     h1 .worked {
-      color: #FFFFFF;
+      color: var(--accent-light);
     }
 
     p {
-      color: rgba(255, 255, 255, 0.82);
+      color: var(--text-muted);
       margin-bottom: 0.85rem;
-      font-size: clamp(0.95rem, 3.9vw, 1.15rem);
-      line-height: 1.55;
+      font-size: 1rem;
     }
 
-    .lead-in {
-      color: #FFFFFF;
-      margin-bottom: 0;
+    p strong {
+      color: var(--text-main);
+      font-weight: 600;
     }
 
     .divider {
       height: 1px;
       background: rgba(255, 255, 255, 0.16);
-      margin: 1.35rem 0;
+      margin: 1.1rem 0;
       border: 0;
     }
 
@@ -161,19 +198,13 @@
       justify-content: center;
       gap: 0.6rem;
       /* Generous height — this is tapped with a thumb, one-handed, standing up. */
-      min-height: 50px;
-      padding: 0.7rem 1.2rem;
-      /* Squared off like a silkscreen outline rather than a UI pill. */
-      border-radius: 6px;
-      font-family: var(--font-mono);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 500;
-      font-size: 0.85rem;
-      /* a wrapped label doubles the button height and stops reading as a label */
-      white-space: nowrap;
+      min-height: 54px;
+      padding: 0.9rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
       text-decoration: none;
-      border: 1.5px solid transparent;
+      border: 1px solid transparent;
       transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
       -webkit-tap-highlight-color: transparent;
     }
@@ -182,14 +213,13 @@
 
     .btn-primary {
       background-color: var(--accent);
-      border-color: var(--accent);
       color: #FFFFFF;
     }
 
     .btn-outline {
-      background-color: rgba(0, 0, 0, 0.28);
-      color: rgba(255, 255, 255, 0.92);
-      border-color: rgba(255, 255, 255, 0.42);
+      background-color: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.28);
     }
 
     .btn svg { flex-shrink: 0; }
@@ -229,42 +259,27 @@
     @media (max-width: 600px) {
       /* The coil frame costs ~84px of width; claw it back inside the card so the
          copy stops re-wrapping and the buttons stay near the fold. */
-      .card { padding: 1.15rem 1rem; }
-      h1 { font-size: clamp(1rem, 4.6vw, 1.7rem); margin-bottom: 0.5rem; }
-      p { font-size: clamp(0.9rem, 3.6vw, 1.05rem); margin-bottom: 0.35rem; }
-      .buttons { gap: 0.45rem; }
-      .btn { min-height: 46px; }
-      .hint { margin-top: 0.4rem; }
-      .lead-in {
-      color: #FFFFFF;
-      margin-bottom: 0;
-    }
-
-    .divider { margin: 0.7rem 0; }
+      .card { padding: 1rem 0.95rem; }
+      .eyebrow { margin-bottom: 0.6rem; }
+      h1 { font-size: 1.1rem; margin-bottom: 0.65rem; }
+      p { font-size: 0.88rem; margin-bottom: 0.45rem; }
+      .divider { margin: 0.6rem 0; }
       .buttons { gap: 0.5rem; }
       .btn { min-height: 46px; font-size: 0.95rem; }
       .hint { margin-top: 0.5rem; }
       /* Dropped on phones: it is decorative, and its email is already printed on the
          physical card next to the QR. Containment inside the coil wins. */
       footer { display: none; }
-      footer { margin-top: 0.6rem; }
     }
 
     /* 320px-wide phones: iPhone SE 1st gen, budget Androids, and any iPhone with
        Display Zoom turned on (which reports 320pt on a 375pt device). */
     @media (max-width: 360px) {
       .card { padding: 0.95rem 0.85rem; }
-      h1 { font-size: clamp(1rem, 4.6vw, 1.7rem); margin-bottom: 0.5rem; }
-      p { font-size: clamp(0.9rem, 3.6vw, 1.05rem); margin-bottom: 0.35rem; }
-      .buttons { gap: 0.45rem; }
-      .btn { min-height: 46px; }
-      .hint { margin-top: 0.4rem; }
-      .lead-in {
-      color: #FFFFFF;
-      margin-bottom: 0;
-    }
-
-    .divider { margin: 0.7rem 0; }
+      h1 { font-size: 1.05rem; margin-bottom: 0.7rem; }
+      p { font-size: 0.85rem; margin-bottom: 0.5rem; }
+      .eyebrow { font-size: 0.62rem; letter-spacing: 1px; margin-bottom: 0.7rem; }
+      .divider { margin: 0.7rem 0; }
       .btn { min-height: 44px; font-size: 0.9rem; padding: 0.6rem 0.9rem; gap: 0.45rem; }
       .hint { font-size: 0.6rem; margin-top: 0.45rem; }
     }
@@ -277,17 +292,10 @@
     @media (max-height: 720px) {
       body { line-height: 1.45; }
       .card { padding: 0.75rem 0.8rem; }
-      h1 { font-size: clamp(0.95rem, 4.3vw, 1.35rem); margin-bottom: 0.45rem; line-height: 1.2; }
-      p { font-size: clamp(0.8rem, 3.2vw, 0.95rem); margin-bottom: 0.32rem; }
-      .buttons { gap: 0.4rem; }
-      .btn { min-height: 44px; font-size: 0.78rem; }
-      .hint { margin-top: 0.35rem; font-size: 0.58rem; }
-      .lead-in {
-      color: #FFFFFF;
-      margin-bottom: 0;
-    }
-
-    .divider { margin: 0.5rem 0; }
+      .eyebrow { margin-bottom: 0.4rem; font-size: 0.62rem; }
+      h1 { font-size: 0.95rem; margin-bottom: 0.42rem; line-height: 1.2; }
+      p { font-size: 0.78rem; margin-bottom: 0.32rem; }
+      .divider { margin: 0.42rem 0; }
       .buttons { gap: 0.45rem; }
       .btn { min-height: 44px; font-size: 0.9rem; padding: 0.6rem 1rem; }
       .hint { margin-top: 0.45rem; font-size: 0.62rem; }
@@ -304,14 +312,13 @@
       .hint { flex: 1 0 100%; }
     }
 
-    /* Desktop and tablet: stop stretching the board.
-       On a phone the viewport is close enough to the board's 0.6284 aspect that
-       filling it looks fine. On a 1920x1000 window it means ~3x horizontal
-       distortion -- the traces become slabs and the components balloon. Here the
-       board keeps its true proportions and is centred, and because the page
-       background is the board's own canvas colour the letterboxing is invisible.
-       The horizontal clearance is rebuilt from the board's real on-screen width so
-       the content still lands inside the innermost coil turn. */
+    /* Desktop and tablet: stop stretching the board. On a phone the viewport is
+       close to the board's 0.6284 aspect so filling it looks fine, but on a
+       1920x1080 window it is ~3x horizontal distortion -- traces become slabs and
+       the components balloon. Here the board keeps its true proportions, centred;
+       the page background is the board's own canvas colour so the letterboxing is
+       invisible. Horizontal clearance is rebuilt from the board's real on-screen
+       width so content still lands inside the innermost turn. */
     @media (min-width: 700px) and (min-height: 500px) {
       :root {
         --board-w: min(100vw, calc(100vh * 0.6284));
@@ -321,39 +328,30 @@
         width: var(--board-w);
         margin-inline: auto;
       }
-      /* The card is now board-shaped (~450px), not 560px, so the wide-screen type
-         scale set above no longer fits inside the coil. */
+      /* The card is board-shaped now (~440px at 1440x900, ~390px at 1280x800), not
+         560px, so the wide-screen type scale set above no longer fits inside it. */
       .card { max-width: none; padding: 1.6rem 1.5rem; }
       h1 { font-size: 1.45rem; margin-bottom: 1rem; }
       p { font-size: 0.95rem; margin-bottom: 0.8rem; }
-      .lead-in {
-      color: #FFFFFF;
-      margin-bottom: 0;
-    }
-
-    .divider { margin: 1.1rem 0; }
+      .divider { margin: 1.1rem 0; }
       .buttons { flex-direction: column; }
       .btn { flex: none; min-height: 50px; }
       .hint { margin-top: 0.6rem; }
       footer { margin-top: 0.9rem; padding-top: 0.8rem; }
     }
 
-    /* Shorter desktop windows (a 1280x800 laptop, say). The board is only as tall as
-       the window, so the gap inside the coil shrinks with it -- at 800px tall the
-       full desktop type overflows the card by ~62px. */
+    /* Shorter desktop windows (a 1280x800 laptop). The board is only as tall as the
+       window, so the gap inside the coil shrinks with it and the tier above still
+       overflows. */
     @media (min-width: 700px) and (max-height: 880px) {
-      .card { padding: 1.25rem 1.35rem; }
-      h1 { font-size: 1.25rem; margin-bottom: 0.85rem; }
-      p { font-size: 0.9rem; margin-bottom: 0.7rem; }
-      .lead-in {
-      color: #FFFFFF;
-      margin-bottom: 0;
-    }
-
-    .divider { margin: 0.9rem 0; }
-      .btn { min-height: 46px; }
-      .buttons { gap: 0.6rem; }
-      footer { margin-top: 0.75rem; padding-top: 0.65rem; }
+      .card { padding: 1.2rem 1.3rem; }
+      h1 { font-size: 1.2rem; margin-bottom: 0.8rem; }
+      p { font-size: 0.88rem; margin-bottom: 0.6rem; }
+      .divider { margin: 0.8rem 0; }
+      .btn { min-height: 44px; }
+      .buttons { gap: 0.55rem; }
+      .hint { margin-top: 0.5rem; }
+      footer { margin-top: 0.7rem; padding-top: 0.6rem; }
     }
 
     /* Landscape phones. The gap inside the coil is only ~336px tall at 667x375, so a
@@ -373,16 +371,12 @@
       }
       .lede, .buttons { min-width: 0; }
       .buttons { flex-direction: column; }
-      .lead-in {
-      color: #FFFFFF;
-      margin-bottom: 0;
-    }
-
-    .divider { display: none; }
+      .divider { display: none; }
       .buttons { align-self: center; }
       footer { display: none; }
-      h1 { font-size: 0.95rem; line-height: 1.25; margin-bottom: 0.5rem; }
-      p { font-size: 0.78rem; margin-bottom: 0.4rem; }
+      .eyebrow { margin-bottom: 0.5rem; }
+      h1 { font-size: 0.92rem; line-height: 1.22; margin-bottom: 0.4rem; }
+      p { font-size: 0.76rem; margin-bottom: 0.32rem; }
       p:last-child { margin-bottom: 0; }
       .btn { min-height: 40px; font-size: 0.85rem; padding: 0.5rem 0.8rem; }
       .hint { font-size: 0.58rem; margin-top: 0.4rem; }
@@ -395,21 +389,30 @@
 
   <main class="card">
    <div class="lede">
+    <div class="eyebrow">Tap successful</div>
+
     <h1>
       If you're reading this, I handed you my business card at the Fall 2026
       Industrial Roundtable &mdash; and <span class="worked">it worked</span>.
     </h1>
 
     <p>
-      I'm Alexander Arens, a senior at Purdue studying electrical engineering. I build
-      hardware: robotics, embedded systems, and power electronics.
+      That card is a <strong>PCB I designed myself</strong> &mdash; custom-routed NFC
+      antenna and transponder, no battery. It borrows power from your phone's radio
+      field to serve you this page.
+      <strong>What frames this page is that same board</strong>: the coil around your
+      screen is the antenna you just tapped.
     </p>
 
-    <p class="lead-in">
-      Interested in how I built this? If that's what your team does, I'd like to talk.
+    <p>
+      I'm <strong>Alexander Arens</strong>, a senior at Purdue studying electrical
+      engineering. I build hardware: robotics, embedded systems, power electronics, and
+      computer vision. If that's the kind of thing your team does, I'd like to talk.
     </p>
 
    </div>
+
+    <hr class="divider" />
 
     <div class="buttons">
       <!-- Projects lead: the portfolio is the thing worth a recruiter's attention,
@@ -426,7 +429,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8.98h4.56V24H.22V8.98zm7.98 0h4.37v2.05h.06c.61-1.15 2.1-2.37 4.32-2.37 4.62 0 5.47 3.04 5.47 7v8.34h-4.56v-7.4c0-1.77-.03-4.04-2.46-4.04-2.47 0-2.85 1.93-2.85 3.92V24H8.2V8.98z"/>
         </svg>
-        LinkedIn
+        Connect on LinkedIn
       </a>
 
       <p class="hint">Projects are best viewed on a laptop</p>
