@@ -144,6 +144,8 @@
     /* .if-card covers both people holding a card: tap and scan. */
     [data-src="web"] .if-nfc, [data-src="web"] .if-qr, [data-src="web"] .if-card { display: none; }
     [data-src="web"] .if-web { display: inline; }
+    /* No radio link, no scan -- nothing to report, so drop the label entirely. */
+    [data-src="web"] .eyebrow { display: none; }
 
     .eyebrow {
       font-family: var(--font-mono);
@@ -411,7 +413,7 @@
 
   <main class="card">
    <div class="lede">
-    <div class="eyebrow">Tap successful</div>
+    <div class="eyebrow"><span class="if-nfc">Tap successful</span><span class="if-qr">Scan successful</span></div>
 
     <h1>
       <span class="if-card">If you're reading this, I handed you my business card at
