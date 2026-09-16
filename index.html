@@ -14,9 +14,10 @@
        is a system stack instead. -->
 
   <!-- Decide tap-vs-scan before first paint so neither variant flashes. The NFC tag
-       is programmed with ?s=nfc; the QR is etched into the silkscreen and cannot be
-       changed, so anything without the parameter is a scan or a direct visit. With
-       JS off nothing is set and the tap wording shows, which is the common case. -->
+       is programmed with ?s=nfc; the QR is etched into silkscreen and cannot carry a
+       parameter, so anything else is a scan, a portfolio click (?s=web) or a typed
+       URL, and the wording for those must not claim a tap OR a scan. With JS off
+       nothing is set and the tap wording shows, which is the common case. -->
   <script>
     try {
       document.documentElement.dataset.src =
@@ -418,7 +419,7 @@
       phone's radio field to serve you this page.</span><span class="if-qr"> It borrows power from the
       phone's radio field whenever one is held to it.</span>
       <strong>What frames this page is that same board</strong>: the coil around your
-      screen is the antenna<span class="if-nfc"> you just tapped</span><span class="if-qr"> around the QR you scanned</span>.
+      screen is the antenna<span class="if-nfc"> you just tapped</span><span class="if-qr"> on the card itself</span>.
     </p>
 
     <p>
@@ -472,7 +473,8 @@
     addEventListener('load', function () {
       if (!COUNTER_CODE) return;
       try {
-        var src = document.documentElement.dataset.src === 'nfc' ? 'nfc' : 'qr';
+        var q = new URLSearchParams(location.search).get('s');
+        var src = q === 'nfc' ? 'nfc' : q === 'web' ? 'web' : 'qr';
         new Image().src = 'https://' + COUNTER_CODE + '.goatcounter.com/count'
           + '?p=/card/' + src
           + '&t=' + encodeURIComponent('Card via ' + src)
