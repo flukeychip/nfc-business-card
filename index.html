@@ -13,6 +13,17 @@
        is the single most likely way this page fails when signal is bad, so the type
        is a system stack instead. -->
 
+  <!-- Decide tap-vs-scan before first paint so neither variant flashes. The NFC tag
+       is programmed with ?s=nfc; the QR is etched into the silkscreen and cannot be
+       changed, so anything without the parameter is a scan or a direct visit. With
+       JS off nothing is set and the tap wording shows, which is the common case. -->
+  <script>
+    try {
+      document.documentElement.dataset.src =
+        new URLSearchParams(location.search).get('s') === 'nfc' ? 'nfc' : 'qr';
+    } catch (e) {}
+  </script>
+
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>" />
 
   <style>
@@ -122,6 +133,11 @@
     @supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
       .card { background: rgba(14, 19, 27, 0.95); }
     }
+
+    /* Only one of these is ever shown; see the head script. */
+    .if-qr { display: none; }
+    [data-src="qr"] .if-nfc { display: none; }
+    [data-src="qr"] .if-qr  { display: inline; }
 
     .eyebrow {
       font-family: var(--font-mono);
@@ -398,10 +414,11 @@
 
     <p>
       That card is a <strong>PCB I designed myself</strong> &mdash; custom-routed NFC
-      antenna and transponder, no battery. It borrows power from your phone's radio
-      field to serve you this page.
+      antenna and transponder, no battery.<span class="if-nfc"> It borrows power from your
+      phone's radio field to serve you this page.</span><span class="if-qr"> It borrows power from the
+      phone's radio field whenever one is held to it.</span>
       <strong>What frames this page is that same board</strong>: the coil around your
-      screen is the antenna you just tapped.
+      screen is the antenna<span class="if-nfc"> you just tapped</span><span class="if-qr"> around the QR you scanned</span>.
     </p>
 
     <p>
@@ -440,6 +457,29 @@
       </footer>
   </main>
 
+
+  <script>
+    // ---- Hit counter -------------------------------------------------------
+    // GoatCounter: cookieless, no personal data, so no consent banner is needed.
+    // Deliberately NOT their count.js -- that is a third-party script on the
+    // critical path, which is the exact failure mode this page was hardened
+    // against. This is a single fire-and-forget pixel AFTER load: if it is slow,
+    // blocked, or offline, nothing about the page changes.
+    //
+    // TO ACTIVATE: make a free account at goatcounter.com, then put your code
+    // here. While it is empty this block does nothing at all.
+    var COUNTER_CODE = '';
+    addEventListener('load', function () {
+      if (!COUNTER_CODE) return;
+      try {
+        var src = document.documentElement.dataset.src === 'nfc' ? 'nfc' : 'qr';
+        new Image().src = 'https://' + COUNTER_CODE + '.goatcounter.com/count'
+          + '?p=/card/' + src
+          + '&t=' + encodeURIComponent('Card via ' + src)
+          + '&r=' + encodeURIComponent(document.referrer || '');
+      } catch (e) {}
+    });
+  </script>
 
   <script>
     // Email assembled at runtime so scrapers parsing raw HTML get nothing,
