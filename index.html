@@ -481,9 +481,30 @@
     //
     // TO ACTIVATE: make a free account at goatcounter.com, then put your code
     // here. While it is empty this block does nothing at all.
+    //
+    // My own taps would otherwise dominate the numbers, since I test this card
+    // far more than anyone else taps it. Loading the page with
+    // #toggle-goatcounter flips this browser between counted and ignored.
+    // Storage is blocked in some privacy modes, so every access is guarded:
+    // nothing here is allowed to affect whether the page renders.
     var COUNTER_CODE = 'flukeychip';
+
+    function gcSkipped() {
+      try { return localStorage.getItem('skipgc') === '1'; } catch (e) { return false; }
+    }
+
+    if (location.hash === '#toggle-goatcounter') {
+      try {
+        var gcOff = !gcSkipped();
+        localStorage.setItem('skipgc', gcOff ? '1' : '0');
+        alert('Analytics ' + (gcOff ? 'OFF' : 'ON') + ' for this browser.');
+      } catch (e) {
+        alert('Could not save that: this browser is blocking local storage.');
+      }
+    }
+
     addEventListener('load', function () {
-      if (!COUNTER_CODE) return;
+      if (!COUNTER_CODE || gcSkipped()) return;
       try {
         var q = new URLSearchParams(location.search).get('s');
         var src = q === 'nfc' ? 'nfc' : q === 'web' ? 'web' : 'qr';
