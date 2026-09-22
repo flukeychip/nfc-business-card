@@ -59,7 +59,7 @@
       inset: 0;
       pointer-events: none;
       z-index: 0;
-      background: url('img/board.svg?v=4') center / 100% 100% no-repeat;
+      background: url('../img/board.svg?v=4') center / 100% 100% no-repeat;
     }
 
     /* Content must sit INSIDE the innermost coil turn, never on top of it. Because
@@ -416,8 +416,12 @@
     <div class="eyebrow"><span class="if-nfc">Tap successful</span><span class="if-qr">Scan successful</span></div>
 
     <h1>
+      <!-- EVENT PAGE: Chips and AI Hackathon showcase, September 22nd 2026.
+           Separate page on purpose. Cards handed out at Industrial Roundtable
+           point at ../ and must never change wording under the people already
+           holding them. One page per event, frozen once the cards go out. -->
       <span class="if-card">If you're reading this, I handed you my business card at
-      the Fall 2026 Industrial Roundtable &mdash; and <span class="worked">it worked</span>.</span><span
+      the Chips and AI Hackathon showcase &mdash; and <span class="worked">it worked</span>.</span><span
       class="if-web">Thanks for going through my GitHub &mdash; glad something in there
       <span class="worked">brought you here</span>.</span>
     </h1>
@@ -437,7 +441,9 @@
     <p>
       I'm <strong>Alexander Arens</strong>, a senior at Purdue studying electrical
       engineering. I build hardware: robotics, embedded systems, power electronics, and
-      computer vision. If that's the kind of thing your team does, I'd like to talk.
+      computer vision.<span class="if-card"> My team's laser turret is one of the finalists
+      here &mdash; it finds a drone and keeps a laser tracking it.</span> If that's the kind of
+      thing your team does, I'd like to talk.
     </p>
 
    </div>
@@ -511,8 +517,8 @@
         var q = new URLSearchParams(location.search).get('s');
         var src = q === 'nfc' ? 'nfc' : q === 'web' ? 'web' : 'qr';
         new Image().src = 'https://' + COUNTER_CODE + '.goatcounter.com/count'
-          + '?p=/card/' + src
-          + '&t=' + encodeURIComponent('Card via ' + src)
+          + '?p=/card/chips/' + src
+          + '&t=' + encodeURIComponent('Chips card via ' + src)
           + '&r=' + encodeURIComponent(document.referrer || '');
       } catch (e) {}
     });
